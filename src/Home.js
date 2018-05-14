@@ -14,20 +14,35 @@ const styles = (theme) => ({
         marginRight: theme.spacing.unit,
         width: 'fill-available',
         marginTop: theme.spacing.unit,
-        marginBottom: theme.spacing.unit / 2
+        marginBottom: theme.spacing.unit / 2,
     },
     menu: {
         width: 200,
     },
     paper: theme.mixins.gutters({
         marginTop: theme.spacing.unit,
-        marginLeft: 50,
-        marginRight: 50,
-        paddingLeft: 0
+        paddingLeft: 0,
+        width: 400,
+        margin: '0 auto',
     }),
     button: {
         margin: theme.spacing.unit,
+        width: 200,
+        margin: '0 auto',
+        marginTop: 40
     },
+    root: {
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center'
+    },
+    titleText: {
+        color: 'black',
+        margin: '0 auto',
+        marginBottom: 20
+    }
 });
 
 class Home extends Component {
@@ -53,8 +68,10 @@ class Home extends Component {
         const { classes } = this.props;
 
         return (
-            <div className="App">
-                Not Google
+            <div className={classes.root}>
+                <Typography variant="display3" noWrap="true" className={classes.titleText}>
+                Edu Search Engine
+                </Typography>
                 <Paper className={classes.paper}>
                     <TextField value={this.state.searchText}
                         onKeyPress={this.onSearchSubmit}
@@ -63,7 +80,9 @@ class Home extends Component {
                         id="search"
                         type="search"
                         className={classes.textField}
-                        margin="normal" />
+                        margin="normal"
+                        autoComplete="off"
+                        autoFocus="true" />
                 </Paper>
 
                 <Button onClick={this.onSearchSubmit} variant="raised" className={classes.button}>
