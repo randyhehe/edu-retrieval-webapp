@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import {TextField, Paper, Typography, Button } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 import 'typeface-roboto';
+import SearchBox from './SearchBox.js';
 
 const styles = (theme) => ({
     container: {
@@ -26,7 +27,6 @@ const styles = (theme) => ({
         margin: '0 auto',
     }),
     button: {
-        margin: theme.spacing.unit,
         width: 200,
         margin: '0 auto',
         marginTop: 40
@@ -49,8 +49,8 @@ class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {searchText: ''};
-    }
-
+    }  
+    
     onSearchChange = (event) => {
         this.setState({searchText: event.target.value});
     }
@@ -69,22 +69,10 @@ class Home extends Component {
 
         return (
             <div className={classes.root}>
-                <Typography variant="display3" noWrap="true" className={classes.titleText}>
+                <Typography variant="display3" noWrap={true} className={classes.titleText}>
                 Edu Search Engine
                 </Typography>
-                <Paper className={classes.paper}>
-                    <TextField value={this.state.searchText}
-                        onKeyPress={this.onSearchSubmit}
-                        onChange={this.onSearchChange}
-                        InputProps={{disableUnderline: true}}
-                        id="search"
-                        type="search"
-                        className={classes.textField}
-                        margin="normal"
-                        autoComplete="off"
-                        autoFocus="true" />
-                </Paper>
-
+                <SearchBox className={classes.paper} value={this.state.searchText} onSearchChange={this.onSearchChange} onSearchSubmit={this.onSearchSubmit}/>
                 <Button onClick={this.onSearchSubmit} variant="raised" className={classes.button}>
                     Search
                 </Button>
