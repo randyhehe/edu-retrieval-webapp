@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import SearchBox from './SearchBox.js';
 import SearchList from './SearchList.js';
 import 'typeface-roboto';
+import Pagination from "react-js-pagination";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const styles = theme => ({
     searchbox: theme.mixins.gutters({
@@ -34,7 +36,23 @@ const styles = theme => ({
 class Search extends Component {
     constructor(props) {
         super(props);
-        this.state = {searchText: this.getQueryString()};
+
+        console.log(this.getPage());
+        this.state = {searchText: this.getQueryString(), prevSearchText: this.getQueryString(), items: null, activePage: this.getPage(), totalItems: 0};
+        this.getSearchResults();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const queryText = this.getQueryString();
+        const page = this.getPage();
+
+        console.log(page);
+        console.log(prevState.activePage);
+
+        if (queryText && queryText !== prevState.prevSearchText || page !== prevState.activePage) {
+            this.setState({searchText: queryText, prevSearchText: queryText, activePage: page});
+            this.getSearchResults();
+        }
     }
 
     onSearchChange = (event) => {
@@ -42,9 +60,8 @@ class Search extends Component {
     }
     
     onSearchSubmit = (event) => {
-        // If search button is clicked or enter is pressed in the input textbox.
         if (event.key === undefined || event.key === 'Enter') {
-            const path = encodeURI(`/search?query=${this.state.searchText}`);
+            const path = encodeURI(`/search?query=${this.state.searchText}&start=0`);
             this.props.history.push(path);
             event.preventDefault();
         }
@@ -52,20 +69,41 @@ class Search extends Component {
 
     getQueryString = () => {
         const parameters = decodeURI(this.props.location.search);
-        const query = parameters.split("=")[1];
+        const query = parameters.split("=")[1].split("&")[0];
+
         return query;
     };
 
+    getStart = () => {
+        const parameters = decodeURI(this.props.location.search);
+        const start = parameters.split("=")[2];
+        return parseInt(start);
+    }
+
+    getPage = () => {
+        return (parseInt(this.getStart()) / 10) + 1;
+    }
+
     getSearchResults = () => {
-        // mock results for now
-        const results = [];
-        for (let i = 0; i < 10; i++) {
-            let newResult = {};
-            newResult.title = `Article Number ${i}`;
-            newResult.link = `https://testlink${i}.com`;
-            results.push(newResult);
-        }
-        return results;
+        const searchText = this.getQueryString();
+        const start = this.getStart();
+
+        console.log(start);
+
+        let url = `http://localhost:4567/search?query=${searchText}&start=${start}`;
+        fetch(url).then(result => result.json())
+            .then((items) => {
+                this.setState({items: items.entries, totalItems: items.totalResults});
+                console.log("search");
+            });
+    }
+
+    handlePageChange = (pageNumber) => {
+        this.setState({activePage: pageNumber});
+        const start = (pageNumber - 1) * 10;
+        const path = encodeURI(`/search?query=${this.state.prevSearchText}&start=${start}`);
+        this.props.history.push(path);
+
     }
 
     render() {
@@ -80,7 +118,17 @@ class Search extends Component {
                     <SearchBox className={classes.searchbox} value={this.state.searchText} onSearchChange={this.onSearchChange} onSearchSubmit={this.onSearchSubmit}/>
                 </div>
                 <Divider />
-                <SearchList searchResults={this.getSearchResults()} className={classes.searchList} />
+                <SearchList searchResults={this.state.items} className={classes.searchList} />
+
+                <Pagination
+                    activePage = {this.state.activePage}
+                    itemsCountPerPage = {10}
+                    totalItemsCount = {this.state.totalItems}
+                    pageRangeDisplayed = {10}
+                    onChange = {this.handlePageChange}
+                    hideFirstLastPages = {true}
+                />
+                    
             </div>
         );
     }

@@ -8,7 +8,8 @@ const styles = theme => ({
         listStyleType: 'none',
         fontFamily: 'roboto',
         marginTop: 30,
-        paddingLeft: 100
+        paddingLeft: 100,
+        paddingRight: 100
     },
     item: {
         marginBottom: 25,
@@ -17,38 +18,52 @@ const styles = theme => ({
     titleText: {
         textDecoration: 'none',
         color: '#0000EE',
-        fontSize: 18
+        fontSize: 18,
+        '&:hover': {
+            textDecoration: 'underline'
+        }
     },
     linkText: {
         color: 'rgb(44,99,43)',
         fontSize: 16
+    },
+    noResults: {
+        fontSize: 18,
+        textAlign: 'center',
+        marginTop: 20,
+        marginBottom: 20
     }
 });
 
 class SearchList extends Component {
     constructor(props) {
-        // used with api calls in the future
         super(props);
     }
     
     generateList() {
         const { classes } = this.props;
 
-        const results = this.props.searchResults;
-        const listItems = [];
-        for (let i = 0; i < results.length; i++) {
-            const item = 
-            <li className={classes.item}>
-                <div><a href="" className={classes.titleText}>{results[i].title}</a></div>
-                <div className={classes.linkText}>{results[i].link}</div>
-            </li>
-            listItems.push(item);
+        const results = this.props.searchResults; 
+        if (results == null) {
+            return null;
+        } else if (results.length < 1) {
+           return <div className={classes.noResults}>No results found</div>
+        } else {
+            const listItems = [];
+            for (let i = 0; i < results.length; i++) {
+                const item = 
+                <li className={classes.item} key={i}>
+                    <div><a href={results[i].url} className={classes.titleText}>{results[i].title}</a></div>
+                    <div className={classes.linkText}>{results[i].url}</div>
+                </li>
+                listItems.push(item);
+            }
+            return <ul className={classes.list}>{listItems}</ul>
         }
-        return <ul className={classes.list}>{listItems}</ul>
     }
 
     render() {
-        return ( // wait on optimizing this
+        return (
             this.generateList()
         );
     }

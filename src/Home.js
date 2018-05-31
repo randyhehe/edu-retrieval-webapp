@@ -58,7 +58,7 @@ class Home extends Component {
     onSearchSubmit = (event) => {
         // If search button is clicked or enter is pressed in the input textbox.
         if (event.key === undefined || event.key === 'Enter') {
-            const path = encodeURI(`/search?query=${this.state.searchText}`);
+            const path = encodeURI(`/search?query=${this.state.searchText}&start=0`);
             this.props.history.push(path);
             event.preventDefault();
         }
