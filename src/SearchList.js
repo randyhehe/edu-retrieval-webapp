@@ -30,8 +30,7 @@ const styles = theme => ({
     noResults: {
         fontSize: 18,
         textAlign: 'center',
-        marginTop: 20,
-        marginBottom: 20
+        marginTop: 20
     }
 });
 

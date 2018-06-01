@@ -37,7 +37,6 @@ class Search extends Component {
     constructor(props) {
         super(props);
 
-        console.log(this.getPage());
         this.state = {searchText: this.getQueryString(), prevSearchText: this.getQueryString(), items: null, activePage: this.getPage(), totalItems: 0};
         this.getSearchResults();
     }
@@ -45,9 +44,6 @@ class Search extends Component {
     componentDidUpdate(prevProps, prevState) {
         const queryText = this.getQueryString();
         const page = this.getPage();
-
-        console.log(page);
-        console.log(prevState.activePage);
 
         if (queryText && queryText !== prevState.prevSearchText || page !== prevState.activePage) {
             this.setState({searchText: queryText, prevSearchText: queryText, activePage: page});
@@ -60,6 +56,7 @@ class Search extends Component {
     }
     
     onSearchSubmit = (event) => {
+
         if (event.key === undefined || event.key === 'Enter') {
             const path = encodeURI(`/search?query=${this.state.searchText}&start=0`);
             this.props.history.push(path);
@@ -87,14 +84,16 @@ class Search extends Component {
     getSearchResults = () => {
         const searchText = this.getQueryString();
         const start = this.getStart();
-
-        console.log(start);
+        
+        // do nothing if empty input
+        if (/^ *$/.test(searchText)) {
+            return;
+        }
 
         let url = `http://localhost:4567/search?query=${searchText}&start=${start}`;
         fetch(url).then(result => result.json())
             .then((items) => {
                 this.setState({items: items.entries, totalItems: items.totalResults});
-                console.log("search");
             });
     }
 
