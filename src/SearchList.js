@@ -50,10 +50,11 @@ class SearchList extends Component {
         } else {
             const listItems = [];
             for (let i = 0; i < results.length; i++) {
+                const url = `http://www.${results[i].url}`;
                 const item = 
                 <li className={classes.item} key={i}>
-                    <div><a href={results[i].url} className={classes.titleText}>{results[i].title}</a></div>
-                    <div className={classes.linkText}>{results[i].url}</div>
+                    <div><a href={url} className={classes.titleText}>{results[i].title}</a></div>
+                    <div className={classes.linkText}>{url}</div>
                 </li>
                 listItems.push(item);
             }
